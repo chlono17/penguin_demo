@@ -1,0 +1,511 @@
+
+<style>
+.vtabs{display:flex;gap:8px;margin-bottom:12px}
+.vtab{padding:5px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary)}
+.vtab.on{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
+.cpanel{font-family:var(--font-mono);font-size:11.5px;line-height:1.9;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:10px;overflow-x:auto}
+.cl{padding:0 5px;border-radius:3px;color:var(--color-text-tertiary);white-space:pre}
+.cl.on{background:var(--color-background-warning);color:var(--color-text-primary);font-weight:500}
+.ebox{min-height:38px;padding:8px 14px;border-left:3px solid var(--color-border-info);background:var(--color-background-info);border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;font-size:13px;color:var(--color-text-info);margin-bottom:10px;line-height:1.55}
+.vwrap{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start}
+.varea{flex:1;min-height:100px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;overflow-x:auto}
+.marea{width:196px;flex-shrink:0;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px}
+.ctrls{display:flex;gap:8px;align-items:center}
+.btn{padding:5px 14px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
+.btn:hover{background:var(--color-background-secondary)}
+.btn:disabled{opacity:0.35;cursor:default}
+.btnp{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
+.sinfo{font-size:12px;color:var(--color-text-tertiary);margin-left:auto;text-align:right;line-height:1.5}
+.nrow{display:flex;align-items:flex-start;gap:0;flex-wrap:wrap;row-gap:6px}
+.nbox{display:flex;flex-direction:column;align-items:center;min-width:62px}
+.nc{border:1.5px solid var(--color-border-primary);border-radius:6px;padding:3px 6px;font-size:11px;font-family:var(--font-mono);text-align:center;min-width:54px;line-height:1.35;background:var(--color-background-primary);transition:all 0.2s}
+.nc.ncur{border-color:#534AB7;background:#EEEDFE;color:#3C3489;font-weight:500}
+.nc.ncand{border-color:#BA7517;background:#FAEEDA;color:#633806}
+.nc.nnew{border-color:#D85A30;background:#FAECE7;color:#712B13}
+.nc.ndead{border-color:#888780;background:#F1EFE8;color:#888780;text-decoration:line-through;opacity:0.55}
+.nc.npath{border-color:#185FA5;background:#E6F1FB;color:#0C447C;font-weight:500}
+.arw{font-size:15px;color:var(--color-text-tertiary);margin:0 1px;padding-top:4px}
+.plbl{font-size:10px;color:var(--color-text-secondary);margin-top:2px;font-family:var(--font-mono);text-align:center;min-height:13px}
+.nlbl{font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono);padding:3px 5px;border:1px dashed var(--color-border-tertiary);border-radius:5px;margin-top:4px;align-self:flex-start}
+.mgrid{display:grid;gap:3px;margin-bottom:8px}
+.mc{width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-family:var(--font-mono);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-secondary);transition:background 0.2s,border-color 0.2s}
+.mc.mwall{background:var(--color-background-tertiary);color:var(--color-text-tertiary)}
+.mc.mcur{background:#EEEDFE;border:1.5px solid #534AB7;color:#3C3489;font-weight:500}
+.mc.mvis{background:#F1EFE8;border:1px solid #888780;color:#888780}
+.mc.mdead{background:#F1EFE8;border:1.5px dashed #888780;color:#888780}
+.mc.mcand{background:#FAEEDA;border:1px solid #BA7517;color:#633806}
+.mc.mpath{background:#E6F1FB;border:1.5px solid #185FA5;color:#0C447C;font-weight:500}
+.mc.mgoal{border:1.5px solid #534AB7;color:#3C3489}
+.mc.mfound{background:#E1F5EE;border:1.5px solid #1D9E75;color:#085041;font-weight:500}
+.mleg{font-size:10px;color:var(--color-text-tertiary);line-height:1.9}
+.ld{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:middle;margin-right:3px}
+.drow{margin-top:7px;font-size:11px;color:var(--color-text-secondary)}
+.db{display:inline-block;padding:1px 6px;border-radius:10px;font-size:11px;font-family:var(--font-mono);margin:0 2px}
+.dd{background:#E1F5EE;color:#085041;border:0.5px solid #1D9E75}
+.ds{background:#F1EFE8;color:#888780;border:0.5px solid #888780;text-decoration:line-through;opacity:0.6}
+.dp{background:var(--color-background-secondary);color:var(--color-text-tertiary);border:0.5px solid var(--color-border-tertiary)}
+.found-banner{margin-bottom:8px;padding:5px 12px;background:#E1F5EE;border:0.5px solid #1D9E75;border-radius:6px;font-size:13px;color:#085041;font-weight:500}
+.note{font-size:11px;color:var(--color-text-secondary);margin-top:6px;padding:5px 10px;border-left:2px solid var(--color-border-secondary);line-height:1.5;background:var(--color-background-secondary);border-radius:0 4px 4px 0}
+</style>
+
+<h2 class="sr-only">DFS Stack vs BFS Queue 逐步動畫，同一迷宮不同路徑</h2>
+
+<div class="vtabs">
+  <button class="vtab on" onclick="sw('stack')">Stack DFS</button>
+  <button class="vtab" onclick="sw('queue')">Queue BFS</button>
+</div>
+<div class="cpanel" id="cpanel"></div>
+<div class="ebox" id="ebox">點「下一步」開始</div>
+<div class="vwrap">
+  <div class="varea" id="varea"></div>
+  <div class="marea">
+    <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:5px;text-align:center">S=起點　G=終點</div>
+    <div class="mgrid" id="mgrid"></div>
+    <div class="mleg">
+      <span class="ld" style="background:#EEEDFE;border:1.5px solid #534AB7"></span>目前 pop<br>
+      <span class="ld" style="background:#E6F1FB;border:1.5px solid #185FA5"></span>正確路徑<br>
+      <span class="ld" style="background:#F1EFE8;border:1.5px dashed #888780"></span>死路（已拜訪）<br>
+      <span class="ld" style="background:#FAEEDA;border:1px solid #BA7517"></span>stack/queue 中<br>
+      <span class="ld" style="background:var(--color-background-tertiary)"></span>牆
+    </div>
+  </div>
+</div>
+<div class="ctrls">
+  <button class="btn" onclick="prev()" id="bprev" disabled>上一步</button>
+  <button class="btn btnp" onclick="next()" id="bnext">下一步 →</button>
+  <button class="btn" onclick="reset()">重置</button>
+  <div class="sinfo" id="sinfo"></div>
+</div>
+
+<script>
+/*
+迷宮設計（5行5列，row0~4，col0~4）：
+
+     0    1    2    3    4
+0  [ S ][ 0 ][ W ][ 0 ][ G ]
+1  [ 0 ][ W ][ 0 ][ W ][ 0 ]
+2  [ 0 ][ 0 ][ 0 ][ 0 ][ 0 ]
+3  [ W ][ W ][ 0 ][ W ][ W ]
+4  [ W ][ W ][ 0 ][ W ][ W ]
+
+S=(0,0)  G=(0,4)
+Push 順序：d=0上 d=1右 d=2下 d=3左
+LIFO → 實際走訪順序：左先、下次、右再、上最後
+
+DFS trace from (0,0):
+- pop(0,0): vis. neigh: up=OOB, right=(0,1)✓, down=(1,0)✓, left=OOB
+  push (0,1) then (1,0). stack head=(1,0)→(0,1)
+- pop(1,0): vis. neigh: up=(0,0)vis, right=(1,1)W, down=(2,0)✓, left=OOB
+  push (2,0). head=(2,0)→(0,1)
+- pop(2,0): vis. neigh: up=(1,0)vis, right=(2,1)✓, down=OOB(r3=wall), left=OOB
+  push (2,1). head=(2,1)→(0,1)
+- pop(2,1): vis. neigh: up=(1,1)W, right=(2,2)✓, down=OOB, left=(2,0)vis
+  push (2,2). head=(2,2)→(0,1)
+- pop(2,2): vis. neigh: up=(1,2)✓, right=(2,3)✓, down=(3,2)✓, left=(2,1)vis
+  push (1,2),(2,3),(3,2). head=(3,2)→(2,3)→(1,2)→(0,1)   ← LIFO: (3,2) pops next
+- pop(3,2): vis. neigh: up=(2,2)vis, right=(3,3)W, down=(4,2)✓, left=(3,1)W
+  push (4,2). head=(4,2)→(2,3)→(1,2)→(0,1)
+- pop(4,2): vis. neigh: up=(3,2)vis, right=(4,3)W, down=OOB, left=(4,1)W → nothing.
+  DEAD END. head=(2,3)→(1,2)→(0,1)
+- pop(2,3): vis. neigh: up=(1,3)W, right=(2,4)✓, down=(3,3)W, left=(2,2)vis
+  push (2,4). head=(2,4)→(1,2)→(0,1)
+- pop(2,4): vis. neigh: up=(1,4)✓, right=OOB, down=(3,4)W, left=(2,3)vis
+  push (1,4). head=(1,4)→(1,2)→(0,1)
+- pop(1,4): vis. neigh: up=(0,4)=G✓, right=OOB, down=(2,4)vis, left=(1,3)W
+  push (0,4). head=(0,4)→(1,2)→(0,1)
+- pop(0,4): vis. GOAL! found!
+
+Dead ends visited: (3,2),(4,2)
+Path: (0,0)→(1,0)→(2,0)→(2,1)→(2,2)→(2,3)→(2,4)→(1,4)→(0,4)
+
+BFS from (0,0):  (visited marked on enqueue)
+visited(0,0) on init.
+- dequeue(0,0): neigh right=(0,1)✓, down=(1,0)✓. enqueue (0,1),(1,0). vis(0,1),vis(1,0).
+  queue: (0,1)→(1,0)
+- dequeue(0,1): neigh up=OOB,right=(0,2)W,down=(1,1)W,left=(0,0)vis → nothing.
+  queue: (1,0)
+- dequeue(1,0): neigh up=(0,0)vis,right=(1,1)W,down=(2,0)✓,left=OOB. enqueue (2,0).
+  queue: (2,0)
+- dequeue(2,0): neigh up=(1,0)vis,right=(2,1)✓,down=OOB,left=OOB. enqueue (2,1).
+  queue: (2,1)
+- dequeue(2,1): right=(2,2)✓. enqueue (2,2).
+  queue: (2,2)
+- dequeue(2,2): up=(1,2)✓,right=(2,3)✓,down=(3,2)✓. enqueue all.
+  queue: (1,2)→(2,3)→(3,2)
+- dequeue(1,2): up=(0,2)W,right=(1,3)W,down=(2,2)vis,left=(1,1)W → nothing.
+  queue: (2,3)→(3,2)
+- dequeue(2,3): right=(2,4)✓. enqueue (2,4).
+  queue: (3,2)→(2,4)
+- dequeue(3,2): up=(2,2)vis,down=(4,2)✓. enqueue (4,2).
+  queue: (2,4)→(4,2)
+- dequeue(2,4): up=(1,4)✓. enqueue (1,4).
+  queue: (4,2)→(1,4)
+- dequeue(4,2): all blocked. nothing.
+  queue: (1,4)
+- dequeue(1,4): up=(0,4)=G. enqueue (0,4).
+  queue: (0,4)
+- dequeue(0,4): GOAL!
+
+BFS visits (0,1) early (dead end for BFS too) and (3,2),(4,2).
+BFS path same: (0,0)→(1,0)→(2,0)→(2,1)→(2,2)→(2,3)→(2,4)→(1,4)→(0,4)  — same length
+but BFS explored (0,1) dead end right away in round 2.
+*/
+
+const MAZE=[
+  [0,0,1,0,0],
+  [0,1,0,1,0],
+  [0,0,0,0,0],
+  [1,1,0,1,1],
+  [1,1,0,1,1],
+];
+const ROWS=5,COLS=5,START=[0,0],GOAL=[0,4];
+const PATH_CELLS=[[0,0],[1,0],[2,0],[2,1],[2,2],[2,3],[2,4],[1,4],[0,4]];
+
+const SL=[
+  'while (stackHead != nullptr) {',
+  '    PathNode* top = stackHead;',
+  '    int r=top->r, c=top->c;',
+  '    stackHead = stackHead->next;',
+  '    delete top;',
+  '    if (visited[r][c]) continue;',
+  '    visited[r][c] = true;',
+  '    if (r==eR && c==eC) { found=true; break; }',
+  '    for (int d=0; d<4; d++) {',
+  '        // d=0上 d=1右 d=2下 d=3左',
+  '        if (valid && !visited[nr][nc]...) {',
+  '            stackHead=new PathNode(nr,nc,stackHead);',
+  '        }',
+  '    }',
+  '}',
+];
+const QL=[
+  'while (qHead != nullptr) {',
+  '    int r=qHead->r, c=qHead->c;',
+  '    PathNode* old = qHead;',
+  '    qHead = qHead->next;',
+  '    if (!qHead) qTail = nullptr;',
+  '    delete old;',
+  '    if (r==eR && c==eC) { found=true; break; }',
+  '    for (int d=0; d<4; d++) {',
+  '        if (valid && !visited[nr][nc]...) {',
+  '            visited[nr][nc]=true;',
+  '            PathNode* node=new PathNode(nr,nc,nullptr);',
+  '            if (qTail) qTail->next=node;',
+  '            else        qHead=node;',
+  '            qTail=node;',
+  '        }',
+  '    }',
+  '}',
+];
+
+// node: {l:label, s:style}  styles: ncur ncand nnew ndead npath
+// maze state: {cur, vis, cand, dead, path}
+// vis = fully visited (grey solid)
+// dead = visited dead end (grey dashed)
+// cand = in stack/queue (orange)
+// path = final path (blue)
+
+function S(line,round,explain,nodes,ptrs,maze,opts={}){
+  return{line,round,explain,nodes,ptrs,maze,...opts};
+}
+
+const SS=[
+  // R1: pop (0,0)
+  S(0,1,'while 成立，pop (0,0)',
+    [{l:'S(0,0)',s:'ncur'}],{stackHead:0,top:0},
+    {cur:[0,0],vis:[],cand:[],dead:[],path:[]}),
+  S(4,1,'delete top，釋放 (0,0)',
+    [],{},
+    {cur:[0,0],vis:[],cand:[],dead:[],path:[]},{hnull:true}),
+  S(6,1,'visited[0][0]=true',
+    [],{},
+    {cur:[0,0],vis:[[0,0]],cand:[],dead:[],path:[]},{hnull:true}),
+  S(7,1,'(0,0)≠終點，探索四方向（上右下左，LIFO→左先pop）',
+    [],{},
+    {cur:[0,0],vis:[[0,0]],cand:[],dead:[],path:[]},{hnull:true}),
+  S(11,1,'push (0,1)，再 push (1,0)。LIFO → (1,0) 最先 pop',
+    [{l:'(1,0)',s:'nnew'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[0,0],vis:[[0,0]],cand:[[0,1],[1,0]],dead:[],path:[]},
+    {dirs:['s','d','d','s'],note:'push 右(0,1) 後再 push 下(1,0)，LIFO → (1,0) 在頭'}),
+
+  // R2: pop (1,0)
+  S(0,2,'第 2 輪：pop (1,0)（LIFO，最後 push 的先出）',
+    [{l:'(1,0)',s:'ncur'},{l:'(0,1)',s:'ncand'}],{stackHead:0,top:0},
+    {cur:[1,0],vis:[[0,0]],cand:[[0,1]],dead:[],path:[]}),
+  S(6,2,'visited[1][0]=true',
+    [{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[1,0],vis:[[0,0],[1,0]],cand:[[0,1]],dead:[],path:[]}),
+  S(11,2,'下(2,0)合法 → push。其餘visited/牆/越界',
+    [{l:'(2,0)',s:'nnew'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[1,0],vis:[[0,0],[1,0]],cand:[[0,1],[2,0]],dead:[],path:[]},
+    {dirs:['s','s','d','s']}),
+
+  // R3: pop (2,0)
+  S(0,3,'第 3 輪：pop (2,0)。(0,1) 繼續等在 stack 裡',
+    [{l:'(2,0)',s:'ncur'},{l:'(0,1)',s:'ncand'}],{stackHead:0,top:0},
+    {cur:[2,0],vis:[[0,0],[1,0]],cand:[[0,1]],dead:[],path:[]}),
+  S(6,3,'visited[2][0]=true',
+    [{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[2,0],vis:[[0,0],[1,0],[2,0]],cand:[[0,1]],dead:[],path:[]}),
+  S(11,3,'右(2,1)合法 → push',
+    [{l:'(2,1)',s:'nnew'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[2,0],vis:[[0,0],[1,0],[2,0]],cand:[[0,1],[2,1]],dead:[],path:[]},
+    {dirs:['s','d','s','s']}),
+
+  // R4: pop (2,1)
+  S(0,4,'第 4 輪：pop (2,1)',
+    [{l:'(2,1)',s:'ncur'},{l:'(0,1)',s:'ncand'}],{stackHead:0,top:0},
+    {cur:[2,1],vis:[[0,0],[1,0],[2,0]],cand:[[0,1]],dead:[],path:[]}),
+  S(6,4,'visited[2][1]=true',
+    [{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[2,1],vis:[[0,0],[1,0],[2,0],[2,1]],cand:[[0,1]],dead:[],path:[]}),
+  S(11,4,'右(2,2)合法 → push',
+    [{l:'(2,2)',s:'nnew'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[2,1],vis:[[0,0],[1,0],[2,0],[2,1]],cand:[[0,1],[2,2]],dead:[],path:[]},
+    {dirs:['s','d','s','s']}),
+
+  // R5: pop (2,2) → 3 neighbours
+  S(0,5,'第 5 輪：pop (2,2)，有三個合法鄰居！',
+    [{l:'(2,2)',s:'ncur'},{l:'(0,1)',s:'ncand'}],{stackHead:0,top:0},
+    {cur:[2,2],vis:[[0,0],[1,0],[2,0],[2,1]],cand:[[0,1]],dead:[],path:[]}),
+  S(6,5,'visited[2][2]=true',
+    [{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[2,2],vis:[[0,0],[1,0],[2,0],[2,1],[2,2]],cand:[[0,1]],dead:[],path:[]}),
+  S(11,5,'push 上(1,2)、右(2,3)、下(3,2)。LIFO → (3,2) 最先 pop！',
+    [{l:'(3,2)',s:'nnew'},{l:'(2,3)',s:'ncand'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[2,2],vis:[[0,0],[1,0],[2,0],[2,1],[2,2]],cand:[[0,1],[1,2],[2,3],[3,2]],dead:[],path:[]},
+    {dirs:['d','d','d','s'],note:'push順序:上→右→下，LIFO所以(3,2)在頭，下一個先pop它'}),
+
+  // R6: pop (3,2) → dead end via (4,2)
+  S(0,6,'第 6 輪：pop (3,2)。DFS 鑽進下方死路！',
+    [{l:'(3,2)',s:'ncur'},{l:'(2,3)',s:'ncand'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0,top:0},
+    {cur:[3,2],vis:[[0,0],[1,0],[2,0],[2,1],[2,2]],cand:[[0,1],[1,2],[2,3]],dead:[],path:[]}),
+  S(6,6,'visited[3][2]=true',
+    [{l:'(2,3)',s:'ncand'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[3,2],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2]],cand:[[0,1],[1,2],[2,3]],dead:[[3,2]],path:[]}),
+  S(11,6,'下(4,2)合法 → push（繼續往更深處走）',
+    [{l:'(4,2)',s:'nnew'},{l:'(2,3)',s:'ncand'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[3,2],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2]],cand:[[0,1],[1,2],[2,3],[4,2]],dead:[[3,2]],path:[]},
+    {dirs:['s','s','d','s']}),
+
+  // R7: pop (4,2) → TRUE dead end
+  S(0,7,'第 7 輪：pop (4,2)。真正的死路！',
+    [{l:'(4,2)',s:'ncur'},{l:'(2,3)',s:'ncand'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0,top:0},
+    {cur:[4,2],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2]],cand:[[0,1],[1,2],[2,3]],dead:[[3,2]],path:[]}),
+  S(6,7,'visited[4][2]=true',
+    [{l:'(2,3)',s:'ncand'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[4,2],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2]],cand:[[0,1],[1,2],[2,3]],dead:[[3,2],[4,2]],path:[]}),
+  S(11,7,'四方向全跳過！沒有新節點 push → 自動回溯到 stack 的下一個',
+    [{l:'(2,3)',s:'ncand'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[4,2],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2]],cand:[[0,1],[1,2],[2,3]],dead:[[3,2],[4,2]],path:[]},
+    {dirs:['s','s','s','s'],note:'死路！DFS 不需要做任何特殊處理，直接繼續 while 迴圈 pop 下一個'}),
+
+  // R8: pop (2,3)
+  S(0,8,'第 8 輪：回溯！pop (2,3)，重回正確路線',
+    [{l:'(2,3)',s:'ncur'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0,top:0},
+    {cur:[2,3],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2]],cand:[[0,1],[1,2]],dead:[[3,2],[4,2]],path:[]}),
+  S(6,8,'visited[2][3]=true',
+    [{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[2,3],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[2,3]],cand:[[0,1],[1,2]],dead:[[3,2],[4,2]],path:[]}),
+  S(11,8,'右(2,4) → push',
+    [{l:'(2,4)',s:'nnew'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[2,3],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[2,3]],cand:[[0,1],[1,2],[2,4]],dead:[[3,2],[4,2]],path:[]},
+    {dirs:['s','d','s','s']}),
+
+  // R9-10 abbreviated
+  S(0,'9~10','pop (2,4)→push (1,4)，pop (1,4)→push (0,4)，路徑延伸到終點上方',
+    [{l:'(0,4)',s:'nnew'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[1,4],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[2,3],[2,4],[1,4]],cand:[[0,1],[1,2],[0,4]],dead:[[3,2],[4,2]],path:[]}),
+
+  // R11: pop (0,4) FOUND
+  S(0,11,'第 11 輪：pop (0,4)！',
+    [{l:'G(0,4)',s:'ncur'},{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0,top:0},
+    {cur:[0,4],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[2,3],[2,4],[1,4]],cand:[[0,1],[1,2]],dead:[[3,2],[4,2]],path:[]}),
+  S(6,11,'visited[0][4]=true',
+    [{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[0,4],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[2,3],[2,4],[1,4],[0,4]],cand:[[0,1],[1,2]],dead:[[3,2],[4,2]],path:[]}),
+  S(7,11,'r==eR && c==eC！found=true, break！\nDFS 走了死路(3,2)→(4,2)才找到終點',
+    [{l:'(1,2)',s:'ncand'},{l:'(0,1)',s:'ncand'}],{stackHead:0},
+    {cur:[0,4],vis:[[0,0],[1,0],[2,0],[2,1],[2,2],[3,2],[4,2],[2,3],[2,4],[1,4],[0,4]],cand:[[0,1],[1,2]],dead:[[3,2],[4,2]],path:PATH_CELLS},
+    {found:true,note:'(1,2)和(0,1)還在 stack 裡，但 break 後直接結束，不再 pop'}),
+];
+
+const QS=[
+  // BFS: visited marked on ENQUEUE. (0,0) pre-marked.
+  S(0,1,'BFS 第 1 輪：dequeue (0,0)',
+    [{l:'S(0,0)',s:'ncur'}],{qHead:0,qTail:0},
+    {cur:[0,0],vis:[[0,0]],cand:[],dead:[],path:[]}),
+  S(5,1,'delete old，(0,0) 出隊',
+    [],{},{cur:[0,0],vis:[[0,0]],cand:[],dead:[],path:[]},{hnull:true,tnull:true}),
+  S(6,1,'(0,0)≠終點，探索：右(0,1)✓→enqueue，下(1,0)✓→enqueue',
+    [{l:'(0,1)',s:'nnew'},{l:'(1,0)',s:'nnew'}],{qHead:0,qTail:1},
+    {cur:[0,0],vis:[[0,0],[0,1],[1,0]],cand:[[0,1],[1,0]],dead:[],path:[]},
+    {dirs:['s','d','d','s'],note:'BFS 把同層鄰居全部排進隊列，先進先出'}),
+
+  // R2: dequeue (0,1) → dead end immediately
+  S(0,2,'第 2 輪：dequeue (0,1)。注意BFS馬上處理它！',
+    [{l:'(0,1)',s:'ncur'},{l:'(1,0)',s:'ncand'}],{qHead:0,qTail:1},
+    {cur:[0,1],vis:[[0,0],[0,1],[1,0]],cand:[[1,0]],dead:[],path:[]}),
+  S(5,2,'delete old',
+    [{l:'(1,0)',s:'ncand'}],{qHead:0,qTail:0},
+    {cur:[0,1],vis:[[0,0],[0,1],[1,0]],cand:[[1,0]],dead:[],path:[]}),
+  S(6,2,'探索：上越界，右(0,2)牆，下(1,1)牆，左(0,0)visited → 沒有鄰居！死路',
+    [{l:'(1,0)',s:'ncand'}],{qHead:0,qTail:0},
+    {cur:[0,1],vis:[[0,0],[0,1],[1,0]],cand:[[1,0]],dead:[[0,1]],path:[]},
+    {dirs:['s','s','s','s'],note:'BFS 不需要「回溯」，直接繼續 dequeue 下一個'}),
+
+  // R3: dequeue (1,0)
+  S(0,3,'第 3 輪：dequeue (1,0)',
+    [{l:'(1,0)',s:'ncur'}],{qHead:0,qTail:0},
+    {cur:[1,0],vis:[[0,0],[0,1],[1,0]],cand:[],dead:[[0,1]],path:[]}),
+  S(6,3,'下(2,0)✓→enqueue，visited[2][0]=true',
+    [{l:'(2,0)',s:'nnew'}],{qHead:0,qTail:0},
+    {cur:[1,0],vis:[[0,0],[0,1],[1,0],[2,0]],cand:[[2,0]],dead:[[0,1]],path:[]},
+    {dirs:['s','s','d','s']}),
+
+  S(0,4,'第 4 輪：dequeue (2,0)，push (2,1)',
+    [{l:'(2,1)',s:'nnew'}],{qHead:0,qTail:0},
+    {cur:[2,0],vis:[[0,0],[0,1],[1,0],[2,0],[2,1]],cand:[[2,1]],dead:[[0,1]],path:[]}),
+
+  S(0,5,'第 5 輪：dequeue (2,1)，enqueue (2,2)',
+    [{l:'(2,2)',s:'nnew'}],{qHead:0,qTail:0},
+    {cur:[2,1],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2]],cand:[[2,2]],dead:[[0,1]],path:[]}),
+
+  // R6: dequeue (2,2) → 3 neighbours enqueued
+  S(0,6,'第 6 輪：dequeue (2,2)，三個鄰居全部入隊（BFS 按層展開）',
+    [{l:'(1,2)',s:'nnew'},{l:'(2,3)',s:'nnew'},{l:'(3,2)',s:'nnew'}],{qHead:0,qTail:2},
+    {cur:[2,2],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2]],cand:[[1,2],[2,3],[3,2]],dead:[[0,1]],path:[]},
+    {dirs:['d','d','d','s'],note:'BFS 同層三個都入隊，按 FIFO 順序處理，不會像 DFS 急著往深處鑽'}),
+
+  // R7: dequeue (1,2) → dead end
+  S(0,7,'第 7 輪：dequeue (1,2)。四方向全是牆/visited → 死路，直接繼續',
+    [{l:'(2,3)',s:'ncand'},{l:'(3,2)',s:'ncand'}],{qHead:0,qTail:1},
+    {cur:[1,2],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2]],cand:[[2,3],[3,2]],dead:[[0,1],[1,2]],path:[]}),
+
+  // R8: dequeue (2,3) → push (2,4)
+  S(0,8,'第 8 輪：dequeue (2,3)，enqueue (2,4)',
+    [{l:'(3,2)',s:'ncand'},{l:'(2,4)',s:'nnew'}],{qHead:0,qTail:1},
+    {cur:[2,3],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2],[2,4]],cand:[[3,2],[2,4]],dead:[[0,1],[1,2]],path:[]}),
+
+  // R9: dequeue (3,2) → push (4,2)
+  S(0,9,'第 9 輪：dequeue (3,2)，下(4,2)✓→enqueue',
+    [{l:'(2,4)',s:'ncand'},{l:'(4,2)',s:'nnew'}],{qHead:0,qTail:1},
+    {cur:[3,2],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2],[2,4],[4,2]],cand:[[2,4],[4,2]],dead:[[0,1],[1,2],[3,2]],path:[]}),
+
+  // R10: dequeue (2,4) → push (1,4)
+  S(0,10,'第 10 輪：dequeue (2,4)，enqueue (1,4)',
+    [{l:'(4,2)',s:'ncand'},{l:'(1,4)',s:'nnew'}],{qHead:0,qTail:1},
+    {cur:[2,4],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2],[2,4],[4,2],[1,4]],cand:[[4,2],[1,4]],dead:[[0,1],[1,2],[3,2]],path:[]}),
+
+  // R11: dequeue (4,2) → dead end
+  S(0,11,'第 11 輪：dequeue (4,2)。死路，繼續',
+    [{l:'(1,4)',s:'ncand'}],{qHead:0,qTail:0},
+    {cur:[4,2],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2],[2,4],[4,2],[1,4]],cand:[[1,4]],dead:[[0,1],[1,2],[3,2],[4,2]],path:[]}),
+
+  // R12: dequeue (1,4) → push (0,4)
+  S(0,12,'第 12 輪：dequeue (1,4)，上(0,4)=終點！→ enqueue',
+    [{l:'G(0,4)',s:'nnew'}],{qHead:0,qTail:0},
+    {cur:[1,4],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2],[2,4],[4,2],[1,4],[0,4]],cand:[[0,4]],dead:[[0,1],[1,2],[3,2],[4,2]],path:[]}),
+
+  // R13: dequeue (0,4) → FOUND
+  S(0,13,'第 13 輪：dequeue (0,4)！',
+    [{l:'G(0,4)',s:'ncur'}],{qHead:0,qTail:0},
+    {cur:[0,4],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2],[2,4],[4,2],[1,4],[0,4]],cand:[],dead:[[0,1],[1,2],[3,2],[4,2]],path:[]}),
+  S(6,13,'r==eR && c==eC！found=true, break！\nBFS 也找到了，共走 13 輪（比 DFS 多），但保證最短路徑',
+    [],{},{cur:[0,4],vis:[[0,0],[0,1],[1,0],[2,0],[2,1],[2,2],[1,2],[2,3],[3,2],[2,4],[4,2],[1,4],[0,4]],cand:[],dead:[[0,1],[1,2],[3,2],[4,2]],path:PATH_CELLS},
+    {found:true,hnull:true,tnull:true,note:'同樣的迷宮：DFS 11輪、BFS 13輪。DFS深度優先撞死路；BFS按層展開死路較晚發現'}),
+];
+
+let mode='stack',step=-1;
+function sw(m){
+  mode=m;
+  document.querySelectorAll('.vtab').forEach((t,i)=>t.classList.toggle('on',(m==='stack'&&i===0)||(m==='queue'&&i===1)));
+  reset();
+}
+function reset(){
+  step=-1;rc(-1);
+  document.getElementById('ebox').textContent='點「下一步」開始';
+  rv(null);rm(null);
+  document.getElementById('bprev').disabled=true;
+  document.getElementById('bnext').disabled=false;
+  document.getElementById('sinfo').innerHTML='';
+}
+function gs(){return mode==='stack'?SS:QS;}
+function gl(){return mode==='stack'?SL:QL;}
+function rc(al){
+  document.getElementById('cpanel').innerHTML=gl().map((l,i)=>{
+    let c='cl';if(i===al)c+=' on';
+    return`<div class="${c}">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+  }).join('');
+}
+function next(){const s=gs();if(step<s.length-1){step++;upd();}}
+function prev(){if(step>0){step--;upd();}else{step=-1;reset();}}
+function upd(){
+  const s=gs()[step];
+  rc(s.line);
+  document.getElementById('ebox').textContent=s.explain;
+  rv(s);rm(s);
+  document.getElementById('bprev').disabled=step<=0;
+  document.getElementById('bnext').disabled=step>=gs().length-1;
+  document.getElementById('sinfo').innerHTML=`步驟 ${step+1}/${gs().length}<br>第 ${s.round} 輪`;
+}
+
+const SM={ncur:'ncur',ncand:'ncand',nnew:'nnew',ndead:'ndead',npath:'npath'};
+function rv(s){
+  const el=document.getElementById('varea');
+  if(!s){el.innerHTML='<div style="color:var(--color-text-tertiary);font-size:13px">節點狀態</div>';return;}
+  const{nodes=[],ptrs={},hnull,dirs,found,note}=s;
+  const pf=idx=>Object.entries(ptrs).filter(([,n])=>n===idx).map(([k])=>k);
+  let h='';
+  if(found)h+=`<div class="found-banner">找到終點！路徑標藍</div>`;
+  h+='<div class="nrow">';
+  const isEmpty=hnull&&nodes.length===0;
+  if(isEmpty)h+=`<span style="font-size:12px;color:var(--color-text-tertiary);font-family:var(--font-mono)">${mode==='stack'?'stackHead':'qHead/qTail'}=null</span>`;
+  nodes.forEach((nd,i)=>{
+    const cc='nc '+(SM[nd.s]||'');
+    const pl=pf(i);
+    h+=`<div class="nbox"><div class="${cc}">${nd.l}<br><span style="font-size:9px;opacity:0.5">next→</span></div><div class="plbl">${pl.join('/')||''}</div></div>`;
+    if(i<nodes.length-1)h+=`<div class="arw">→</div>`;
+  });
+  if(nodes.length>0)h+=`<div class="arw">→</div><div class="nlbl">null</div>`;
+  h+='</div>';
+  if(dirs){
+    const DL=['上','右','下','左'];
+    h+='<div class="drow">方向：';
+    dirs.forEach((st,i)=>{
+      const c=st==='d'?'dd':st==='s'?'ds':'dp';
+      h+=`<span class="db ${c}">${DL[i]}</span>`;
+    });
+    h+='</div>';
+  }
+  if(note)h+=`<div class="note">${note}</div>`;
+  el.innerHTML=h;
+}
+
+function rm(s){
+  const el=document.getElementById('mgrid');
+  if(!s||!s.maze){el.innerHTML='';return;}
+  el.style.gridTemplateColumns=`repeat(${COLS},1fr)`;
+  const{cur,vis=[],cand=[],dead=[],path=[]}=s.maze;
+  const has=(a,r,c)=>a.some(([rr,cc])=>rr===r&&cc===c);
+  let h='';
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    const isCur=cur&&cur[0]===r&&cur[1]===c;
+    const isGoal=r===GOAL[0]&&c===GOAL[1];
+    const isStart=r===START[0]&&c===START[1];
+    let cc='mc',lbl=`${r},${c}`;
+    if(isStart)lbl='S';
+    if(isGoal)lbl='G';
+    if(MAZE[r][c]===1){cc+=' mwall';lbl='▪';}
+    else if(path.length>0&&has(path,r,c)){cc+=' mpath';}
+    else if(isCur){cc+=' mcur';}
+    else if(has(dead,r,c)){cc+=' mdead';}
+    else if(has(cand,r,c)){cc+=' mcand';}
+    else if(has(vis,r,c)){cc+=' mvis';}
+    else if(isGoal){cc+=' mgoal';}
+    h+=`<div class="${cc}">${lbl}</div>`;
+  }
+  el.innerHTML=h;
+}
+reset();
+</script>
